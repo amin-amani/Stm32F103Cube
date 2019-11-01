@@ -1,0 +1,11 @@
+Debug
+*.o
+*.list
+*.mk
+*.map
+*.hex
+*.elf
+*.bin
+*.d
+*.cfg
+.settings
