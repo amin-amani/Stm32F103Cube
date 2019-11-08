@@ -66,14 +66,14 @@ int _write(int file, char *ptr, int len)
 {
 	/* Implement your write code here, this is used by puts and printf for example */
 
-	//	int i=0;
-	//  for(i=0 ; i<len ; i++)
-	//    ITM_SendChar((*ptr++));
-	//  return len;
+		int i=0;
+	  for(i=0 ; i<len ; i++)
+	    ITM_SendChar((*ptr++));
+	  return len;
 
-	//
-	HAL_UART_Transmit(&huart1, ptr, len,5);
-	return  len;
+
+//	HAL_UART_Transmit(&huart1, ptr, len,5);
+//	return  len;
 
 }
 void USART_IrqHandler (UART_HandleTypeDef *huart, DMA_HandleTypeDef *hdma)
@@ -82,9 +82,10 @@ void USART_IrqHandler (UART_HandleTypeDef *huart, DMA_HandleTypeDef *hdma)
 	{
 		volatile uint32_t tmp;                  /* Must be volatile to prevent optimizations */
 
-		//__HAL_DMA_DISABLE (hdma);       /* Disabling DMA will force transfer complete interrupt if enabled */
-		printf("id\n");
-		//DMA_IrqHandler (hdma, huart);
+	__HAL_DMA_DISABLE (hdma);       /* Disabling DMA will force transfer complete interrupt if enabled */
+		printf("idle int\n");
+		DMA_IrqHandler (hdma, huart);
+		__HAL_DMA_ENABLE(hdma);
 		tmp = huart->Instance->SR;                       /* Read status register */
 		tmp = huart->Instance->DR;                       /* Read data register */
 	}
@@ -107,14 +108,16 @@ void DMA_IrqHandler (DMA_HandleTypeDef *hdma, UART_HandleTypeDef *huart)
 		/* Clear the transfer complete flag */
 		/* Important! DMA stream won't start if all flags are not cleared first */
 		__HAL_DMA_CLEAR_FLAG(hdma, __HAL_DMA_GET_TC_FLAG_INDEX(hdma));
+
 		/* Get the length of the data */
-		len =  hdma->Instance->CNDTR;
+		len =  64-hdma->Instance->CNDTR;
+		printf("dma int len=%d\n",len);
 		/* UNCOMMENT BELOW TO transmit the data via uart */
 
 		HAL_UART_Transmit(&huart1, DMA_RX_Buffer[0], len, 10);
-
-		Usart1CurrentBuffer=!Usart1CurrentBuffer;
-		hdma->Instance->CMAR = (uint32_t)DMA_RX_Buffer[Usart1CurrentBuffer];
+		hdma->Instance->CNDTR=64;
+		//Usart1CurrentBuffer=!Usart1CurrentBuffer;
+		//hdma->Instance->CMAR = (uint32_t)DMA_RX_Buffer[Usart1CurrentBuffer];
 		/* Prepare DMA for next transfer no need in dma circular mode */
 
 		//HAL_UART_Receive_DMA (&huart1, DMA_RX_Buffer, 64);
@@ -165,7 +168,7 @@ int main(void)
 	/* USER CODE BEGIN 2 */
 
 
-	//__HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);   // enable idle line interrupt
+	__HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);   // enable idle line interrupt
 
 
 	//	hdma_usart1_rx.Instance->CCR &= ~DMA_SxCR_HTIE;
@@ -177,6 +180,7 @@ int main(void)
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
+	printf("start program ....\n");
 	while (1)
 	{
 		/* USER CODE END WHILE */
@@ -184,6 +188,7 @@ int main(void)
 		/* USER CODE BEGIN 3 */
 		//  printf("DMA CCR=%x\n",DMA1_Channel5->CCR);
 		HAL_Delay(1000);
+
 	}
 	/* USER CODE END 3 */
 }
