@@ -1,7 +1,7 @@
 # IWDG
 
 
-<a href=""><img src="https://github.com/amin-amani/Stm32F103Cube/blob/master/Watchdog/iwdg3.jpeg" alt="LPIC1 ||" width="150"/> 
+<a href=""><img src="https://github.com/amin-amani/Stm32F103Cube/blob/master/Watchdog/iwdg3.jpeg" alt="LPIC1 ||" width="600"/> 
 
 
 ## Let’s take an example, if i want to set the Timeout of 20 ms.
