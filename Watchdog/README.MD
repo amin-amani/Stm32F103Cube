@@ -12,3 +12,11 @@ If we substitute these values in the above formula, we will get the RL = 79.
 So we need to substitute counter value = 79 in our setup.
 
 If the RL value goes higher than 4095, then you need to increase the prescalar.
+
+
+```
+
+	  HAL_IWDG_Refresh(&hiwdg);
+	  LD3_GPIO_Port->ODR^= LD3_Pin;
+	  HAL_Delay(20000);
+```
