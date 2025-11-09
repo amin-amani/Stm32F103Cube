@@ -98,6 +98,8 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim1);
   /* USER CODE END 2 */
 
+    HAL_NVIC_SetPriority(TIM1_UP_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(TIM1_UP_IRQn);
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
